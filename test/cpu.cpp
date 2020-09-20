@@ -94,3 +94,503 @@ TEST(CPUTest, CanDecodeChip8Instructions)
         PC += 2;
     }
 }
+
+TEST(CPUTest, CanExecute0xE0)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xE0;
+    op_code.data = 0x0;
+
+    chip::CPU cpu{};
+
+    for(int i = 0 ; i < cpu.screen.size() ; i++) cpu.screen[i] = 1;
+
+    op_code_0xE0(cpu, op_code);
+
+    for(int i = 0 ; i < cpu.screen.size() ; i++) ASSERT_EQ(cpu.screen[i], 0);
+}
+
+TEST(CPUTest, CanExecute0x2)
+{
+    chip::OpCode subroutine1{};
+    subroutine1.code = 0x2;
+    subroutine1.data = 0x322;
+
+    chip::OpCode subroutine2{};
+    subroutine2.code = 0x2;
+    subroutine2.data = 0x123;
+
+    chip::CPU cpu{};
+    cpu.PC = 0x80;
+
+    op_code_0x2(cpu, subroutine1);
+
+    ASSERT_EQ(cpu.PC, 0x322);
+    ASSERT_EQ(cpu.SP, 0x0);
+    ASSERT_EQ(cpu.stack[cpu.SP], 0x80);    
+
+    op_code_0x2(cpu, subroutine1);
+
+    ASSERT_EQ(cpu.PC, 0x123);
+    ASSERT_EQ(cpu.SP, 0x1);
+    ASSERT_EQ(cpu.stack[cpu.SP], 0x322); 
+}
+
+TEST(CPUTest, CanExecute0xEE)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xEE;
+    op_code.data = 0x0;
+    
+    chip::OpCode subroutine1{};
+    subroutine1.code = 0x2;
+    subroutine1.data = 0x322;
+
+    chip::OpCode subroutine2{};
+    subroutine2.code = 0x2;
+    subroutine2.data = 0x123;
+
+    chip::CPU cpu{};
+    cpu.PC = 0x80;
+
+    op_code_0x2(cpu, subroutine1);
+    op_code_0x2(cpu, subroutine2);
+    
+    op_code_0xEE(cpu, op_code);
+
+    ASSERT_EQ(cpu.PC, 0x322);
+    ASSERT_EQ(cpu.SP, 0x0);
+
+    op_code_0xEE(cpu, op_code);
+
+    ASSERT_EQ(cpu.PC, 0x123);
+    ASSERT_EQ(cpu.SP, 0x0);
+}
+
+TEST(CPUTest, CanExecute0x1)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x1;
+    op_code.data = 0x223;
+
+    chip::CPU cpu{};
+
+    op_code_0x1(cpu, op_code);
+
+    ASSERT_EQ(cpu.PC, 0x223);
+}
+
+TEST(CPUTest, CanExecute0x3)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x3;
+    op_code.data = 0x11;
+
+    chip::CPU cpu{};
+    cpu.PC   = 0x80;
+    cpu.V[0] = 0x11;
+    
+    op_code_0x3(cpu, op_code); 
+
+    ASSERT_EQ(cpu.PC, 0x82);   
+}
+
+TEST(CPUTest, CanExecute0x4)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x4;
+    op_code.data = 0x132;
+
+    chip::CPU cpu{};
+    cpu.PC   = 0x80;
+    cpu.V[1] = 0x23;
+
+    op_code_0x4(cpu, op_code);  
+    ASSERT_EQ(cpu.PC, 0x82);   
+}
+
+TEST(CPUTest, CanExecute0x50)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x50;
+    op_code.data = 0x21;
+
+    chip::CPU cpu{};
+    cpu.PC   = 0x80; 
+    cpu.V[2] = 0x12;
+    cpu.V[1] = 0x12;
+
+    op_code_0x50(cpu, op_code);  
+    ASSERT_EQ(cpu.PC, 0x82);  
+}
+
+TEST(CPUTest, CanExecute0x6)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x6;
+    op_code.data = 0x311;
+
+    chip::CPU cpu{};
+    
+    op_code_0x6(cpu, op_code);
+    ASSERT_EQ(cpu.V[3], 0x11);    
+}
+
+TEST(CPUTest, CanExecute0x7)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x7;
+    op_code.data = 0x40F;
+
+    chip::CPU cpu{};
+    cpu.V[4] = 0x5;
+
+    op_code_0x7(cpu, op_code);
+    ASSERT_EQ(cpu.V[4], 0x14);
+}
+
+TEST(CPUTest, CanExecute0x80)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x80;
+    op_code.data = 0x51;
+
+    chip::CPU cpu{};
+    cpu.V[1] = 0xA;
+
+    op_code_0x80(cpu, op_code); 
+    ASSERT_EQ(cpu.V[5], 0xA);   
+}
+
+TEST(CPUTest, CanExecute0x81)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x81;
+    op_code.data = 0x61;
+
+    chip::CPU cpu{};
+    cpu.V[6] = 0xA;
+    cpu.V[1] = 0xF;
+
+    op_code_0x81(cpu, op_code);
+    ASSERT_EQ(cpu.V[6], 0xA | 0xF); 
+}
+
+TEST(CPUTest, CanExecute0x82)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x82;
+    op_code.data = 0x71;
+
+    chip::CPU cpu{};
+    cpu.V[7] = 0xA;
+    cpu.V[1] = 0xF;
+
+    op_code_0x82(cpu, op_code);
+    ASSERT_EQ(cpu.V[7], 0xA & 0xF);    
+}
+
+TEST(CPUTest, CanExecute0x83)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x83;
+    op_code.data = 0x81;
+
+    chip::CPU cpu{};
+    cpu.V[8] = 0xA;
+    cpu.V[1] = 0xF;
+
+    op_code_0x83(cpu, op_code);
+    ASSERT_EQ(cpu.V[8], 0xA ^ 0xF);  
+}
+
+TEST(CPUTest, CanExecute0x84)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x84;
+    op_code.data = 0x91;
+
+    chip::CPU cpu{};
+    cpu.V[9] = 0x1;
+    cpu.V[1] = 0x1;
+
+    op_code_0x84(cpu, op_code);
+
+    ASSERT_EQ(cpu.V[9], 0x2);
+    ASSERT_EQ(cpu.V[0xF], 0x0);
+
+    cpu.V[9] = 0xFE;
+    cpu.V[1] = 0x3;
+
+    op_code_0x84(cpu, op_code);
+
+    ASSERT_EQ(cpu.V[9], 0x2);
+    ASSERT_EQ(cpu.V[0xF], 0x1);
+}
+
+TEST(CPUTest, CanExecute0x85)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x85;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+    cpu.V[0] = 0x4;
+    cpu.V[1] = 0x5;
+
+    op_code_0x85(cpu, op_code);
+    
+    ASSERT_EQ(cpu.V[0], (uint8_t)0x4 - (uint8_t)0x5);
+    ASSERT_EQ(cpu.V[0xF], 0x0);  
+
+    cpu.V[0] = 0x5;
+    cpu.V[1] = 0x4;
+
+    op_code_0x85(cpu, op_code);
+    ASSERT_EQ(cpu.V[0], (uint8_t)0x5 - (uint8_t)0x4);
+    ASSERT_EQ(cpu.V[0xF], 0x1);  
+}
+
+TEST(CPUTest, CanExecute0x86)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x86;
+    op_code.data = 0x11;
+
+    chip::CPU cpu{};
+    cpu.V[1] = 0xD;
+
+    op_code_0x86(cpu, op_code);
+    ASSERT_EQ(cpu.V[1], 0xD >> 1);
+    ASSERT_EQ(cpu.V[0xF], 0xD & 0x1);    
+}   
+
+TEST(CPUTest, CanExecute0x87)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x87;
+    op_code.data = 0x21;
+
+    chip::CPU cpu{};
+    cpu.V[2] = 0x4;
+    cpu.V[1] = 0x5;
+
+    op_code_0x87(cpu, op_code); 
+    
+    ASSERT_EQ(cpu.V[2], (uint8_t)0x4 - (uint8_t)0x5);
+    ASSERT_EQ(cpu.V[0xF], 0x1);  
+
+    cpu.V[2] = 0x5;
+    cpu.V[1] = 0x4;
+
+    op_code_0x87(cpu, op_code); 
+
+    ASSERT_EQ(cpu.V[2], (uint8_t)0x5 - (uint8_t)0x4);
+    ASSERT_EQ(cpu.V[0xF], 0x0);     
+}
+
+TEST(CPUTest, CanExecute0x8E)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x8E;
+    op_code.data = 0x31;
+
+    chip::CPU cpu{};
+    cpu.V[3] = 0xA1;
+
+    op_code_0x8E(cpu, op_code);
+    ASSERT_EQ(cpu.V[3],   0xA1 << 1);
+    ASSERT_EQ(cpu.V[0xF], 0xA1 & (0x1 << 8));
+}
+
+TEST(CPUTest, CanExecute0x90)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0x90;
+    op_code.data = 0x41;
+
+    chip::CPU cpu{};
+    cpu.PC = 0xA;
+    cpu.V[4] = 0x1;
+    cpu.V[1] = 0x2;
+
+    op_code_0x90(cpu, op_code);   
+    ASSERT_EQ(cpu.PC, 0xC); 
+}
+
+TEST(CPUTest, CanExecute0xA)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xA;
+    op_code.data = 0x12;
+
+    chip::CPU cpu{};
+
+    op_code_0xA(cpu, op_code); 
+    ASSERT_EQ(cpu.I, 0x12);   
+}
+
+TEST(CPUTest, CanExecute0xB)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xB;
+    op_code.data = 0x123;
+
+    chip::CPU cpu{};
+    cpu.V[0] = 0x5;
+
+    op_code_0xB(cpu, op_code);
+    ASSERT_EQ(cpu.PC, 0x123 + 0x5);    
+}
+
+TEST(CPUTest, CanExecute0xC)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xC;
+    op_code.data = 0x233;
+
+    chip::CPU cpu{};
+
+    op_code_0xC(cpu, op_code);    
+}
+
+TEST(CPUTest, CanExecute0xD)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xD;
+    op_code.data = 0x114;
+
+    chip::CPU cpu{};
+
+    op_code_0xD(cpu, op_code);    
+}
+
+TEST(CPUTest, CanExecute0xE9E)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xE9E;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+
+    op_code_0xE9E(cpu, op_code);    
+}
+
+TEST(CPUTest, CanExecute0xEA1)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xEA1;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+
+    op_code_0xEA1(cpu, op_code);    
+}
+
+TEST(CPUTest, CanExecute0xF07)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xF07;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+    cpu.DT = 0x55;
+
+    op_code_0xF07(cpu, op_code);
+    ASSERT_EQ(cpu.V[1], 0x55);     
+}
+
+TEST(CPUTest, CanExecute0xF0A)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xF0A;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+
+    op_code_0xF0A(cpu, op_code);    
+}
+
+TEST(CPUTest, CanExecute0xF15)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xF15;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+    cpu.V[1] = 0x55;
+
+    op_code_0xF15(cpu, op_code);
+    ASSERT_EQ(cpu.DT, cpu.V[1]);
+} 
+
+TEST(CPUTest, CanExecute0xF18)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xF18;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+    cpu.V[1] = 0x42;
+
+    op_code_0xF18(cpu, op_code);
+    ASSERT_EQ(cpu.ST, cpu.V[1]);    
+}
+
+TEST(CPUTest, CanExecute0xF1E)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xF1E;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+    cpu.I = 0x22;
+    cpu.V[1] = 0x22;
+
+    op_code_0xF1E(cpu, op_code); 
+    ASSERT_EQ(cpu.I, 0x22 + 0x22);   
+}
+
+TEST(CPUTest, CanExecute0xF29)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xF29;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+
+    op_code_0xF29(cpu, op_code);    
+}
+
+TEST(CPUTest, CanExecute0xF33)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xF33;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+
+    op_code_0xF33(cpu, op_code);    
+}
+
+TEST(CPUTest, CanExecute0xF55)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xF55;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+
+    op_code_0xF55(cpu, op_code);    
+}
+
+TEST(CPUTest, CanExecute0xF65)
+{
+    chip::OpCode op_code{};
+    op_code.code = 0xF65;
+    op_code.data = 0x1;
+
+    chip::CPU cpu{};
+    
+    op_code_0xF65(cpu, op_code);    
+}

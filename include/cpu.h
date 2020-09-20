@@ -10,6 +10,210 @@
 namespace chip
 {   
     /**
+     *  Representation of the Chip-8 CPU and memory. Chip-8 has
+     *  16 general purpose registers but, the VF register can't 
+     *  be used by any program.
+     * 
+     *  Chip-8 has 4Kb of RAM memory. The first 512 bytes, 
+     *  from 0x000 to 0x1FF, are where the original interpreter 
+     *  was located, and should not be used by programs. Most 
+     *  Chip-8 programs start at location 0x200 (512), but some 
+     *  begin at 0x600 (1536). Programs beginning at 0x600 are 
+     *  intended for the ETI 660 computer. (Cowgods, 1997)
+     * 
+     *  Also, Chip-8 has a 16 16-bit stack which is managed 
+     *  by the SP pointer. Next, Chip-8 has no interrupts
+     *  or hardware registers but it has two timers that count
+     *  down to zero at 60Hz.
+     * 
+     *  Finally, although screen and memory are not part of the
+     *  CPU perse we are putting it on the struct for convenience. 
+     */ 
+    struct CPU
+    {
+        uint8_t  DT;    // Delay Time register.
+        uint8_t  ST;    // Sound Time register.    
+        uint8_t  SP;    // Stack Pointer.
+        uint16_t PC;    // Program Counter.
+        uint16_t I;     // Special register I.
+        std::array<uint8_t, 16> V; // General purpose registers (Vx).
+        std::array<uint8_t, 4096> memory; // memory of the program.
+        std::array<uint8_t, 64 * 32> screen; // Chip-8 expects a screen of 64 by 32 pixels.
+        std::array<uint16_t,16> stack; // stack for function call.
+    };
+
+    static inline void op_code_0xE0(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xEE(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x1(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x2(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x3(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x4(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x50(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x6(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x7(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x80(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x81(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x82(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x83(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x84(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x85(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x86(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x87(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x8E(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0x90(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xA(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xB(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xC(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xD(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xE9E(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xEA1(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xF07(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xF0A(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xF15(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xF18(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xF1E(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xF29(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xF33(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xF55(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+    static inline void op_code_0xF65(CPU& cpu, const OpCode op_code)
+    {
+
+    }
+
+
+    /**
      *  Given a Chip-8 binary program and a pointer to the next OpCode, determine
      *  which one of the OpCodes is and return it with its corresponding data.
      *  
