@@ -105,7 +105,7 @@ TEST(CPUTest, CanExecute0xE0)
 
     for(int i = 0 ; i < cpu.screen.size() ; i++) cpu.screen[i] = 1;
 
-    op_code_0xE0(cpu, op_code);
+    op_code_0xE0(cpu);
 
     for(int i = 0 ; i < cpu.screen.size() ; i++) ASSERT_EQ(cpu.screen[i], 0);
 }
@@ -126,14 +126,14 @@ TEST(CPUTest, CanExecute0x2)
     op_code_0x2(cpu, subroutine1);
 
     ASSERT_EQ(cpu.PC, 0x322);
-    ASSERT_EQ(cpu.SP, 0x0);
-    ASSERT_EQ(cpu.stack[cpu.SP], 0x80);    
+    ASSERT_EQ(cpu.SP, 0x1);
+    ASSERT_EQ(cpu.stack[cpu.SP - 1], 0x80);    
 
-    op_code_0x2(cpu, subroutine1);
+    op_code_0x2(cpu, subroutine2);
 
     ASSERT_EQ(cpu.PC, 0x123);
-    ASSERT_EQ(cpu.SP, 0x1);
-    ASSERT_EQ(cpu.stack[cpu.SP], 0x322); 
+    ASSERT_EQ(cpu.SP, 0x2);
+    ASSERT_EQ(cpu.stack[cpu.SP - 1], 0x322); 
 }
 
 TEST(CPUTest, CanExecute0xEE)
@@ -156,14 +156,14 @@ TEST(CPUTest, CanExecute0xEE)
     op_code_0x2(cpu, subroutine1);
     op_code_0x2(cpu, subroutine2);
     
-    op_code_0xEE(cpu, op_code);
+    op_code_0xEE(cpu);
 
     ASSERT_EQ(cpu.PC, 0x322);
-    ASSERT_EQ(cpu.SP, 0x0);
+    ASSERT_EQ(cpu.SP, 0x1);
+    
+    op_code_0xEE(cpu);
 
-    op_code_0xEE(cpu, op_code);
-
-    ASSERT_EQ(cpu.PC, 0x123);
+    ASSERT_EQ(cpu.PC, 0x80);
     ASSERT_EQ(cpu.SP, 0x0);
 }
 
@@ -318,13 +318,13 @@ TEST(CPUTest, CanExecute0x84)
 
     ASSERT_EQ(cpu.V[9], 0x2);
     ASSERT_EQ(cpu.V[0xF], 0x0);
-
+    
     cpu.V[9] = 0xFE;
     cpu.V[1] = 0x3;
 
     op_code_0x84(cpu, op_code);
 
-    ASSERT_EQ(cpu.V[9], 0x2);
+    ASSERT_EQ(cpu.V[9], 0x1);
     ASSERT_EQ(cpu.V[0xF], 0x1);
 }
 
@@ -340,14 +340,14 @@ TEST(CPUTest, CanExecute0x85)
 
     op_code_0x85(cpu, op_code);
     
-    ASSERT_EQ(cpu.V[0], (uint8_t)0x4 - (uint8_t)0x5);
+    ASSERT_EQ(cpu.V[0], (uint8_t)(0x4 - 0x5));
     ASSERT_EQ(cpu.V[0xF], 0x0);  
 
     cpu.V[0] = 0x5;
     cpu.V[1] = 0x4;
 
     op_code_0x85(cpu, op_code);
-    ASSERT_EQ(cpu.V[0], (uint8_t)0x5 - (uint8_t)0x4);
+    ASSERT_EQ(cpu.V[0], (uint8_t)(0x5 - 0x4));
     ASSERT_EQ(cpu.V[0xF], 0x1);  
 }
 
@@ -377,7 +377,7 @@ TEST(CPUTest, CanExecute0x87)
 
     op_code_0x87(cpu, op_code); 
     
-    ASSERT_EQ(cpu.V[2], (uint8_t)0x4 - (uint8_t)0x5);
+    ASSERT_EQ(cpu.V[2], (uint8_t)(0x5 - 0x4));
     ASSERT_EQ(cpu.V[0xF], 0x1);  
 
     cpu.V[2] = 0x5;
@@ -385,7 +385,7 @@ TEST(CPUTest, CanExecute0x87)
 
     op_code_0x87(cpu, op_code); 
 
-    ASSERT_EQ(cpu.V[2], (uint8_t)0x5 - (uint8_t)0x4);
+    ASSERT_EQ(cpu.V[2], (uint8_t)(0x4 - 0x5));
     ASSERT_EQ(cpu.V[0xF], 0x0);     
 }
 
@@ -399,7 +399,7 @@ TEST(CPUTest, CanExecute0x8E)
     cpu.V[3] = 0xA1;
 
     op_code_0x8E(cpu, op_code);
-    ASSERT_EQ(cpu.V[3],   0xA1 << 1);
+    ASSERT_EQ(cpu.V[3], (uint8_t)(0xA1 << 1));
     ASSERT_EQ(cpu.V[0xF], 0xA1 & (0x1 << 8));
 }
 
@@ -451,7 +451,8 @@ TEST(CPUTest, CanExecute0xC)
 
     chip::CPU cpu{};
 
-    op_code_0xC(cpu, op_code);    
+    op_code_0xC(cpu, op_code);
+    ASSERT_TRUE(false);  
 }
 
 TEST(CPUTest, CanExecute0xD)
@@ -462,7 +463,8 @@ TEST(CPUTest, CanExecute0xD)
 
     chip::CPU cpu{};
 
-    op_code_0xD(cpu, op_code);    
+    op_code_0xD(cpu, op_code);
+    ASSERT_TRUE(false);  
 }
 
 TEST(CPUTest, CanExecute0xE9E)
@@ -473,7 +475,8 @@ TEST(CPUTest, CanExecute0xE9E)
 
     chip::CPU cpu{};
 
-    op_code_0xE9E(cpu, op_code);    
+    op_code_0xE9E(cpu, op_code);
+    ASSERT_TRUE(false);
 }
 
 TEST(CPUTest, CanExecute0xEA1)
@@ -484,7 +487,8 @@ TEST(CPUTest, CanExecute0xEA1)
 
     chip::CPU cpu{};
 
-    op_code_0xEA1(cpu, op_code);    
+    op_code_0xEA1(cpu, op_code);
+    ASSERT_TRUE(false);   
 }
 
 TEST(CPUTest, CanExecute0xF07)
@@ -508,7 +512,8 @@ TEST(CPUTest, CanExecute0xF0A)
 
     chip::CPU cpu{};
 
-    op_code_0xF0A(cpu, op_code);    
+    op_code_0xF0A(cpu, op_code);
+    ASSERT_TRUE(false);  
 }
 
 TEST(CPUTest, CanExecute0xF15)
@@ -559,7 +564,8 @@ TEST(CPUTest, CanExecute0xF29)
 
     chip::CPU cpu{};
 
-    op_code_0xF29(cpu, op_code);    
+    op_code_0xF29(cpu, op_code);
+    ASSERT_TRUE(false);   
 }
 
 TEST(CPUTest, CanExecute0xF33)
@@ -570,7 +576,8 @@ TEST(CPUTest, CanExecute0xF33)
 
     chip::CPU cpu{};
 
-    op_code_0xF33(cpu, op_code);    
+    op_code_0xF33(cpu, op_code);
+    ASSERT_TRUE(false);    
 }
 
 TEST(CPUTest, CanExecute0xF55)
@@ -581,7 +588,8 @@ TEST(CPUTest, CanExecute0xF55)
 
     chip::CPU cpu{};
 
-    op_code_0xF55(cpu, op_code);    
+    op_code_0xF55(cpu, op_code);
+    ASSERT_TRUE(false);    
 }
 
 TEST(CPUTest, CanExecute0xF65)
@@ -592,5 +600,6 @@ TEST(CPUTest, CanExecute0xF65)
 
     chip::CPU cpu{};
     
-    op_code_0xF65(cpu, op_code);    
+    op_code_0xF65(cpu, op_code);
+    ASSERT_TRUE(false);  
 }
