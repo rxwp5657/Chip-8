@@ -3,7 +3,9 @@
 
 #include <tuple>
 #include <array>
+#include <time.h> 
 #include <cstdint>
+#include <stdlib.h>
 
 #include "./opcode.h"
 
@@ -150,31 +152,77 @@ namespace chip
         cpu.V[((op_code.data & 0xF00) >> 8)] = (op_code.data & 0xFF); 
     }
 
+    /**
+     *  Adds the value in register Vx with the value kk specified on
+     *  the OpCode.
+     * 
+     *  @param cpu the cpu whose Vx register will be added.
+     *  @param op_code contains the kk value to be added.
+     */ 
     static inline void op_code_0x7(CPU& cpu, const OpCode& op_code)
     {
         cpu.V[((op_code.data & 0xF00) >> 8)] = cpu.V[((op_code.data & 0xF00) >> 8)] + (op_code.data & 0xFF);
     }
 
+    /**
+     *  Stores the value on register Vy into register Vx.
+     * 
+     *  @param cpu the cpu containing the registers.
+     *  @param op_code contains the id of the registers that will be used.
+     */ 
     static inline void op_code_0x80(CPU& cpu, const OpCode& op_code)
     {
         cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[(op_code.data & 0xF)];
     }
 
+    /**
+     *  Performs a bitwise OR operation between the values 
+     *  of the registers Vx and Vy and stores the result into
+     *  Vx.
+     * 
+     *  @param cpu the cpu that contains the registers used by the operation.
+     *  @param op_code contains the id of the registers that will be used.
+     */ 
     static inline void op_code_0x81(CPU& cpu, const OpCode& op_code)
     {
         cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] | cpu.V[op_code.data & 0xF];
     }
 
+     /**
+     *  Performs a bitwise AND operation between the values 
+     *  of the registers Vx and Vy and stores the result into
+     *  Vx.
+     * 
+     *  @param cpu the cpu that contains the registers used by the operation.
+     *  @param op_code contains the id of the registers that will be used.
+     */ 
     static inline void op_code_0x82(CPU& cpu, const OpCode& op_code)
     {
         cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] & cpu.V[op_code.data & 0xF];
     }
 
+     /**
+     *  Performs a bitwise XOR operation between the values 
+     *  of the registers Vx and Vy and stores the result into
+     *  Vx.
+     * 
+     *  @param cpu the cpu that contains the registers used by the operation.
+     *  @param op_code contains the id of the registers that will be used.
+     */ 
     static inline void op_code_0x83(CPU& cpu, const OpCode& op_code)
     {
         cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] ^ cpu.V[op_code.data & 0xF];
     }
 
+     /**
+     *  Adds the values on registers Vx and Vy and stores the result
+     *  on the Vx register. However, if the addition is greater than 
+     *  255 the VF register will be set to one (carry) and the register
+     *  Vx keeps the 8 lower bits.
+     * 
+     *  @param cpu the cpu that contains the registers used by the operation.
+     *  @param op_code contains the id of the registers that will be used.
+     */ 
     static inline void op_code_0x84(CPU& cpu, const OpCode& op_code)
     {
         if(cpu.V[((op_code.data & 0xF0) >> 4)] + cpu.V[op_code.data & 0xF] > 255)
@@ -189,6 +237,16 @@ namespace chip
         cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] + cpu.V[(op_code.data & 0xF)];
     }   
 
+     /**
+     *  Substracts the value on register Vx by the value on register Vy 
+     *  and stores the result on the Vx register. However, if the value 
+     *  on the Vx register is greater than the value on the Vy register then 
+     *  the VF register will be set to one (carry) and the register Vx 
+     *  keeps the 8 lower bits.
+     * 
+     *  @param cpu the cpu that contains the registers used by the operation.
+     *  @param op_code contains the id of the registers that will be used.
+     */
     static inline void op_code_0x85(CPU& cpu, const OpCode& op_code)
     {
         if(cpu.V[((op_code.data & 0xF0) >> 4)] > cpu.V[op_code.data & 0xF])
@@ -202,12 +260,30 @@ namespace chip
         cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] - cpu.V[(op_code.data & 0xF)];
     }
 
+    /**
+     *  Shifts the value of the Vx register one to the right but, before
+     *  shifting it stores the least significant bit of the value on the
+     *  register VF. 
+     * 
+     *  @param cpu the cpu that contains the register used by the operation.
+     *  @param op_code contains the id of the register that will be used.
+     */ 
     static inline void op_code_0x86(CPU& cpu, const OpCode& op_code)
     {
         cpu.V[0xF] = cpu.V[((op_code.data & 0xF0) >> 4)] & 0x1;
         cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] >> 1;
     }
 
+    /**
+     *  Substracts the value on register Vy by the value on register Vx 
+     *  and stores the result on the Vx register. However, if the value 
+     *  on the Vy register is greater than the value on the Vx register then 
+     *  the VF register will be set to one (carry) and the register Vx 
+     *  keeps the 8 lower bits.
+     * 
+     *  @param cpu the cpu that contains the registers used by the operation.
+     *  @param op_code contains the id of the registers that will be used.
+     */
     static inline void op_code_0x87(CPU& cpu, const OpCode& op_code)
     {
         if(cpu.V[op_code.data & 0xF] > cpu.V[((op_code.data & 0xF0) >> 4)])
@@ -221,6 +297,14 @@ namespace chip
         cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[(op_code.data & 0xF)] - cpu.V[((op_code.data & 0xF0) >> 4)];
     }
 
+    /**
+     *  Shifts the value of the Vx register one to the left but, before
+     *  shifting it stores the most significant bit of the value on the
+     *  register VF. 
+     * 
+     *  @param cpu the cpu that contains the register used by the operation.
+     *  @param op_code contains the id of the register that will be used.
+     */ 
     static inline void op_code_0x8E(CPU& cpu, const OpCode& op_code)
     {
         cpu.V[0xF] = cpu.V[((op_code.data & 0xF0) >> 4)] & (0x1 << 0x8);
@@ -242,14 +326,32 @@ namespace chip
         cpu.PC = cpu.V[0] + op_code.data;
     }
 
-    static inline void op_code_0xC(CPU& cpu, const OpCode& op_code)
+    static inline void op_code_0xC(CPU& cpu, const OpCode& op_code, uint8_t random = rand() % 256)
     {
-
+        cpu.V[(op_code.data & 0xF00) >> 8] = (op_code.data & 0xFF) & random; 
     }
 
     static inline void op_code_0xD(CPU& cpu, const OpCode& op_code)
     {
+        const uint8_t vx = cpu.V[(op_code.data & 0xF00) >> 8];
+        const uint8_t vy = cpu.V[(op_code.data & 0xF0)  >> 4];
+        const uint8_t h  = op_code.data & 0xF;
 
+        cpu.V[0xF] = 0x0;
+        
+        for(int i = 0 ; i < h ; i++)
+        {
+            uint8_t row = cpu.V[cpu.I + i];
+
+            for(int j = 0 ; j < 8 ; j++)
+            {
+                if((row & (0x80 >> j)) != 0x0)
+                {
+                    if(cpu.screen[j + vx + ((i + vy) * 64)] == 0x1) cpu.V[0xF] = 0x1;
+                    cpu.screen[j + vx + ((i + vy) * 64)] ^= 0x1;
+                }            
+            }
+        }
     }
 
     static inline void op_code_0xE9E(CPU& cpu, const OpCode& op_code)

@@ -450,21 +450,55 @@ TEST(CPUTest, CanExecute0xC)
     op_code.data = 0x233;
 
     chip::CPU cpu{};
+    uint8_t random = rand() % 256;
 
-    op_code_0xC(cpu, op_code);
-    ASSERT_TRUE(false);  
+    op_code_0xC(cpu, op_code, random);
+    ASSERT_EQ(cpu.V[2], 0x33 & random);
 }
 
 TEST(CPUTest, CanExecute0xD)
 {
     chip::OpCode op_code{};
     op_code.code = 0xD;
-    op_code.data = 0x114;
+    op_code.data = 0x15;
 
     chip::CPU cpu{};
+    cpu.V[0] = 0x8;
+    cpu.V[1] = 0x0;
+    cpu.I    = 0x2;
+
+    cpu.V[2] = 0xF0;
+    cpu.V[3] = 0x90;
+    cpu.V[4] = 0x90;
+    cpu.V[5] = 0x90;
+    cpu.V[6] = 0xF0;
 
     op_code_0xD(cpu, op_code);
-    ASSERT_TRUE(false);  
+
+    ASSERT_EQ(cpu.screen[8],  0x1); ASSERT_EQ(cpu.screen[9],  0x1);
+    ASSERT_EQ(cpu.screen[10], 0x1); ASSERT_EQ(cpu.screen[11], 0x1);
+    ASSERT_EQ(cpu.screen[12], 0x0); ASSERT_EQ(cpu.screen[13], 0x0);
+    ASSERT_EQ(cpu.screen[14], 0x0); ASSERT_EQ(cpu.screen[15], 0x0);
+
+    ASSERT_EQ(cpu.screen[72], 0x1); ASSERT_EQ(cpu.screen[73], 0x0);
+    ASSERT_EQ(cpu.screen[74], 0x0); ASSERT_EQ(cpu.screen[75], 0x1);
+    ASSERT_EQ(cpu.screen[76], 0x0); ASSERT_EQ(cpu.screen[77], 0x0);
+    ASSERT_EQ(cpu.screen[78], 0x0); ASSERT_EQ(cpu.screen[79], 0x0);
+
+    ASSERT_EQ(cpu.screen[136], 0x1); ASSERT_EQ(cpu.screen[137], 0x0);
+    ASSERT_EQ(cpu.screen[138], 0x0); ASSERT_EQ(cpu.screen[139], 0x1);
+    ASSERT_EQ(cpu.screen[140], 0x0); ASSERT_EQ(cpu.screen[141], 0x0);
+    ASSERT_EQ(cpu.screen[142], 0x0); ASSERT_EQ(cpu.screen[143], 0x0);
+    
+    ASSERT_EQ(cpu.screen[200], 0x1); ASSERT_EQ(cpu.screen[201], 0x0);
+    ASSERT_EQ(cpu.screen[202], 0x0); ASSERT_EQ(cpu.screen[203], 0x1);
+    ASSERT_EQ(cpu.screen[204], 0x0); ASSERT_EQ(cpu.screen[205], 0x0);
+    ASSERT_EQ(cpu.screen[206], 0x0); ASSERT_EQ(cpu.screen[207], 0x0);
+
+    ASSERT_EQ(cpu.screen[264], 0x1); ASSERT_EQ(cpu.screen[265], 0x1);
+    ASSERT_EQ(cpu.screen[266], 0x1); ASSERT_EQ(cpu.screen[267], 0x1);
+    ASSERT_EQ(cpu.screen[268], 0x0); ASSERT_EQ(cpu.screen[269], 0x0);
+    ASSERT_EQ(cpu.screen[270], 0x0); ASSERT_EQ(cpu.screen[271], 0x0);
 }
 
 TEST(CPUTest, CanExecute0xE9E)
