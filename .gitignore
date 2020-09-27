@@ -34,3 +34,9 @@
 # Build folder
 build
 .vscode
+
+# Src folders
+src
+
+# DS_Store
+.DS_Store
