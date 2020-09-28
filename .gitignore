@@ -35,8 +35,8 @@
 build
 .vscode
 
-# Src folders
-src
+# Resource folders
+resources/ROMS
 
 # DS_Store
 .DS_Store

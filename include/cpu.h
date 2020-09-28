@@ -68,14 +68,14 @@ namespace chip
      */ 
     struct CPU
     {
-        CPU() : DT{0}, ST{0}, SP{0}, PC{0x200},I{0}, V{}, key_pad{}, memory{}, screen{}, stack{} {}
+        CPU() : DT{0}, ST{0}, SP{0}, PC{0x200},I{0}, key_pad{}, V{}, memory{}, screen{}, stack{} {}
         uint8_t  DT; // Delay Time register.
         uint8_t  ST; // Sound Time register.    
         uint8_t  SP; // Stack Pointer.
         uint16_t PC; // Program Counter.
         uint16_t I;  // Special register I.
+        uint16_t key_pad; // The key pad of a Chip-8 has 16 keys that can be encoded on a unsigned short.
         std::array<uint8_t, 16> V; // General purpose registers (Vx).
-        std::array<uint8_t, 16> key_pad;
         std::array<uint8_t, 4096> memory; // memory of the program.
         std::array<uint8_t, 64 * 32> screen; // Chip-8 expects a screen of 64 by 32 pixels.
         std::array<uint16_t,16> stack; // stack for function call.
@@ -455,7 +455,7 @@ namespace chip
      */ 
     static inline void op_code_0xE9E(CPU& cpu, const OpCode& op_code)
     {
-        if(cpu.key_pad[cpu.V[op_code.data]] == 0x1) cpu.PC += 2;
+        if((cpu.key_pad & (0x1 << cpu.V[op_code.data])) != 0x0) cpu.PC += 2;
     }
 
     /**
@@ -466,7 +466,7 @@ namespace chip
      */ 
     static inline void op_code_0xEA1(CPU& cpu, const OpCode& op_code)
     {
-        if(cpu.key_pad[cpu.V[op_code.data]] != 0x1) cpu.PC += 2;
+        if((cpu.key_pad & (0x1 << cpu.V[op_code.data])) == 0x0) cpu.PC += 2;
     }
 
     /**
@@ -491,7 +491,7 @@ namespace chip
     {
         for(int i = 0 ; i < 16 ; i++) 
         {
-            if(cpu.key_pad[i] != 0)
+            if((cpu.key_pad & (0x1 << i)) != 0)
             {
                 cpu.V[op_code.data] = i;
                 return;

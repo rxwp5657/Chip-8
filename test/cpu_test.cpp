@@ -515,10 +515,10 @@ TEST(CPUTest, CanExecute0xE9E)
     cpu.PC = 0; 
 
     cpu.V[0x1] = 0xA;
-    cpu.key_pad[0xA] = 0x1;
+    cpu.key_pad |= (0x1 << 0xA);
     
     cpu.V[0x2] = 0x1;
-    cpu.key_pad[0x1] = 0x0;
+    cpu.key_pad|= (0x0 << 0x1);
 
     op_code_0xE9E(cpu, test_a);
     ASSERT_EQ(cpu.PC, 0x2);
@@ -541,10 +541,10 @@ TEST(CPUTest, CanExecute0xEA1)
     cpu.PC = 0; 
 
     cpu.V[0x1] = 0xA;
-    cpu.key_pad[0xA] = 0x1;
+    cpu.key_pad |= (0x1 << 0xA);
     
     cpu.V[0x2] = 0x1;
-    cpu.key_pad[0x1] = 0x0;
+    cpu.key_pad|= (0x0 << 0x1);
 
     op_code_0xEA1(cpu, test_a);
     ASSERT_EQ(cpu.PC, 0x0);
@@ -578,7 +578,7 @@ TEST(CPUTest, CanExecute0xF0A)
     op_code_0xF0A(cpu, op_code);
     ASSERT_EQ(cpu.PC, 0x0);
 
-    cpu.key_pad[0xA] = 0x1;
+    cpu.key_pad |= (0x1 << 0xA);
     cpu.PC += 2;
 
     op_code_0xF0A(cpu, op_code);
@@ -737,7 +737,7 @@ TEST(CPUTest, CanLoadROM)
         0x80, 0x00, 0x00, 0x00, 0x00, 0x00
     }};
 
-    chip::load_ROM(cpu, "../src/pong.rom");
+    chip::load_ROM(cpu, "../resources/ROMS/pong.rom");
 
     for(int i = 0; i < program.size() ; i++) 
         ASSERT_EQ(cpu.memory[chip::ROM_START + i], program[i]);
