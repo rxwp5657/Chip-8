@@ -101,13 +101,16 @@ TEST(CPUTest, CanExecute0xE0)
     op_code.code = 0xE0;
     op_code.data = 0x0;
 
-    chip::CPU cpu{};
+    uint8_t screen[chip::SCREEN_SIZE] = {};
 
-    for(int i = 0 ; i < cpu.screen.size() ; i++) cpu.screen[i] = 1;
+    chip::CPU cpu{};
+    cpu.screen = &screen[0];
+
+    for(int i = 0 ; i < chip::SCREEN_SIZE ; i++) cpu.screen[i] = 1;
 
     op_code_0xE0(cpu, op_code);
 
-    for(int i = 0 ; i < cpu.screen.size() ; i++) ASSERT_EQ(cpu.screen[i], 0);
+    for(int i = 0 ; i < chip::SCREEN_SIZE ; i++) ASSERT_EQ(cpu.screen[i], 0);
 }
 
 TEST(CPUTest, CanExecute0x2)
@@ -462,10 +465,13 @@ TEST(CPUTest, CanExecute0xD)
     op_code.code = 0xD;
     op_code.data = 0x15;
 
+    uint8_t screen[chip::SCREEN_SIZE] = {};
+
     chip::CPU cpu{};
     cpu.V[0] = 0x8;
     cpu.V[1] = 0x0;
     cpu.I    = 0x2;
+    cpu.screen = &screen[0];
 
     cpu.V[2] = 0xF0;
     cpu.V[3] = 0x90;

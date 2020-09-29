@@ -19,7 +19,7 @@ namespace chip
      *  Chip-8 programs start at address 0x200;
      */ 
     const uint16_t ROM_START = 0x200;
-
+    const uint16_t SCREEN_SIZE = 64 * 32;
     /**
      *  Chip-8 has a font set which can be used to 
      *  write letters A - F and digits 0 - 9. Also,
@@ -68,16 +68,16 @@ namespace chip
      */ 
     struct CPU
     {
-        CPU() : DT{0}, ST{0}, SP{0}, PC{0x200},I{0}, key_pad{}, V{}, memory{}, screen{}, stack{} {}
+        CPU() :  DT{0}, ST{0}, SP{0}, PC{0x200},I{0}, key_pad{}, screen{nullptr}, V{}, memory{}, stack{} {}
         uint8_t  DT; // Delay Time register.
         uint8_t  ST; // Sound Time register.    
         uint8_t  SP; // Stack Pointer.
         uint16_t PC; // Program Counter.
         uint16_t I;  // Special register I.
         uint16_t key_pad; // The key pad of a Chip-8 has 16 keys that can be encoded on a unsigned short.
+        uint8_t* screen; // Chip-8 expects a screen of 64 by 32 pixels.
         std::array<uint8_t, 16> V; // General purpose registers (Vx).
         std::array<uint8_t, 4096> memory; // memory of the program.
-        std::array<uint8_t, 64 * 32> screen; // Chip-8 expects a screen of 64 by 32 pixels.
         std::array<uint16_t,16> stack; // stack for function call.
     };
 
@@ -106,7 +106,7 @@ namespace chip
      */
     static inline void op_code_0xE0(CPU& cpu, const OpCode& op_code)
     {
-        for(int i = 0 ; i < cpu.screen.size() ; i++) cpu.screen[i] = 0;
+        for(int i = 0 ; i < SCREEN_SIZE ; i++) cpu.screen[i] = 0;
     }
 
     /**
@@ -679,7 +679,7 @@ namespace chip
     {
         { 0xE0,  op_code_0xE0 },
         { 0xEE,  op_code_0xEE },
-        { 0x0 ,  op_code_0x0  }, 
+        { 0x0,   op_code_0x0  }, 
         { 0x1,   op_code_0x1  }, 
         { 0x2,   op_code_0x2  }, 
         { 0x3,   op_code_0x3  }, 
