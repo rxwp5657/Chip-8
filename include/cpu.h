@@ -68,7 +68,7 @@ namespace chip
      */ 
     struct CPU
     {
-        CPU() :  DT{0}, ST{0}, SP{0}, PC{0x200},I{0}, key_pad{}, screen{nullptr}, V{}, memory{}, stack{} {}
+        CPU() :  DT{0}, ST{0}, SP{0}, PC{0x200},I{0}, key_pad{}, screen{nullptr}, draw{false}, V{}, memory{}, stack{} {}
         uint8_t  DT; // Delay Time register.
         uint8_t  ST; // Sound Time register.    
         uint8_t  SP; // Stack Pointer.
@@ -76,6 +76,7 @@ namespace chip
         uint16_t I;  // Special register I.
         uint16_t key_pad; // The key pad of a Chip-8 has 16 keys that can be encoded on a unsigned short.
         uint8_t* screen; // Chip-8 expects a screen of 64 by 32 pixels.
+        bool     draw;
         std::array<uint8_t, 16> V; // General purpose registers (Vx).
         std::array<uint8_t, 4096> memory; // memory of the program.
         std::array<uint16_t,16> stack; // stack for function call.
@@ -106,6 +107,7 @@ namespace chip
      */
     static inline void op_code_0xE0(CPU& cpu, const OpCode& op_code)
     {
+        cpu.draw = true;
         for(int i = 0 ; i < SCREEN_SIZE ; i++) cpu.screen[i] = 0;
     }
 
@@ -430,6 +432,7 @@ namespace chip
         const uint8_t vy = cpu.V[(op_code.data & 0xF0)  >> 4];
         const uint8_t h  = op_code.data & 0xF;
 
+        cpu.draw   = true; 
         cpu.V[0xF] = 0x0;
         
         for(int i = 0 ; i < h ; i++)
