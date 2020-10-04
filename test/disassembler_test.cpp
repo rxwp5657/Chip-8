@@ -12,7 +12,7 @@ TEST(DisassemblerTest, CanDisassemble0xE0)
 
     std::string result = disassemble_0xE0(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "CLS");
+    EXPECT_STRCASEEQ(result.c_str(), "(E0)\tCLS");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xEE)
@@ -23,7 +23,7 @@ TEST(DisassemblerTest, CanDisassemble0xEE)
 
     std::string result = disassemble_0xEE(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "RET");
+    EXPECT_STRCASEEQ(result.c_str(), "(EE)\tRET");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x1)
@@ -34,7 +34,7 @@ TEST(DisassemblerTest, CanDisassemble0x1)
 
     std::string result = disassemble_0x1(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "JMP\t$223");
+    EXPECT_STRCASEEQ(result.c_str(), "(1)\tJMP\t$223");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x2 )
@@ -45,7 +45,7 @@ TEST(DisassemblerTest, CanDisassemble0x2 )
 
     std::string result = disassemble_0x2(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "CALL\t$322");
+    EXPECT_STRCASEEQ(result.c_str(), "(2)\tCALL\t$322");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x3 )
@@ -56,7 +56,7 @@ TEST(DisassemblerTest, CanDisassemble0x3 )
 
     std::string result = disassemble_0x3(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SE\tV0, $11");
+    EXPECT_STRCASEEQ(result.c_str(), "(3)\tSE\tV0, $11");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x4 )
@@ -67,7 +67,7 @@ TEST(DisassemblerTest, CanDisassemble0x4 )
 
     std::string result = disassemble_0x4(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SNE\tV1, $32");
+    EXPECT_STRCASEEQ(result.c_str(), "(4)\tSNE\tV1, $32");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x50)
@@ -78,7 +78,7 @@ TEST(DisassemblerTest, CanDisassemble0x50)
 
     std::string result = disassemble_0x50(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SE\tV2, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(50)\tSE\tV2, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x6)
@@ -89,7 +89,7 @@ TEST(DisassemblerTest, CanDisassemble0x6)
 
     std::string result = disassemble_0x6(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "MOV\tV3, $11");
+    EXPECT_STRCASEEQ(result.c_str(), "(6)\tMOV\tV3, $11");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x7)
@@ -100,7 +100,7 @@ TEST(DisassemblerTest, CanDisassemble0x7)
 
     std::string result = disassemble_0x7(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "ADD\tV4, $F");
+    EXPECT_STRCASEEQ(result.c_str(), "(7)\tADD\tV4, $F");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x80)
@@ -111,7 +111,7 @@ TEST(DisassemblerTest, CanDisassemble0x80)
 
     std::string result = disassemble_0x80(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "MOV\tV5, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(80)\tMOV\tV5, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x81)
@@ -122,7 +122,7 @@ TEST(DisassemblerTest, CanDisassemble0x81)
 
     std::string result = disassemble_0x81(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "OR\tV6, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(81)\tOR\tV6, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x82)
@@ -133,7 +133,7 @@ TEST(DisassemblerTest, CanDisassemble0x82)
 
     std::string result = disassemble_0x82(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "AND\tV7, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(82)\tAND\tV7, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x83)
@@ -144,7 +144,7 @@ TEST(DisassemblerTest, CanDisassemble0x83)
 
     std::string result = disassemble_0x83(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "XOR\tV8, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(83)\tXOR\tV8, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x84)
@@ -155,7 +155,7 @@ TEST(DisassemblerTest, CanDisassemble0x84)
 
     std::string result = disassemble_0x84(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "ADD\tV9, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(84)\tADD\tV9, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x85)
@@ -166,7 +166,7 @@ TEST(DisassemblerTest, CanDisassemble0x85)
 
     std::string result = disassemble_0x85(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SUB\tV0, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(85)\tSUB\tV0, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x86)
@@ -177,7 +177,7 @@ TEST(DisassemblerTest, CanDisassemble0x86)
 
     std::string result = disassemble_0x86(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SHR\tV1");
+    EXPECT_STRCASEEQ(result.c_str(), "(86)\tSHR\tV1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x87)
@@ -188,7 +188,7 @@ TEST(DisassemblerTest, CanDisassemble0x87)
 
     std::string result = disassemble_0x87(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SUBN\tV2, V1");  
+    EXPECT_STRCASEEQ(result.c_str(), "(87)\tSUBN\tV2, V1");  
 }
 
 TEST(DisassemblerTest, CanDisassemble0x8E)
@@ -199,7 +199,7 @@ TEST(DisassemblerTest, CanDisassemble0x8E)
 
     std::string result = disassemble_0x8E(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SHL\tV3");
+    EXPECT_STRCASEEQ(result.c_str(), "(8E)\tSHL\tV3");
 }
 
 TEST(DisassemblerTest, CanDisassemble0x90)
@@ -210,7 +210,7 @@ TEST(DisassemblerTest, CanDisassemble0x90)
 
     std::string result = disassemble_0x90(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SNE\tV4, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(90)\tSNE\tV4, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xA )
@@ -221,7 +221,7 @@ TEST(DisassemblerTest, CanDisassemble0xA )
 
     std::string result = disassemble_0xA(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "MVI\tI $12");
+    EXPECT_STRCASEEQ(result.c_str(), "(A)\tMVI\tI $12");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xB )
@@ -232,7 +232,7 @@ TEST(DisassemblerTest, CanDisassemble0xB )
 
     std::string result = disassemble_0xB(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "JMP\tV0, $123");
+    EXPECT_STRCASEEQ(result.c_str(), "(B)\tJMP\tV0, $123");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xC )
@@ -243,7 +243,7 @@ TEST(DisassemblerTest, CanDisassemble0xC )
 
     std::string result = disassemble_0xC(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "RND\tV2, $33");
+    EXPECT_STRCASEEQ(result.c_str(), "(C)\tRND\tV2, $33");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xD )
@@ -254,7 +254,7 @@ TEST(DisassemblerTest, CanDisassemble0xD )
 
     std::string result = disassemble_0xD(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "DRW\tV1, V1, $4");
+    EXPECT_STRCASEEQ(result.c_str(), "(D)\tDRW\tV1, V1, $4");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xE9E)
@@ -265,7 +265,7 @@ TEST(DisassemblerTest, CanDisassemble0xE9E)
 
     std::string result = disassemble_0xE9E(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SKP\tV1");
+    EXPECT_STRCASEEQ(result.c_str(), "(E9E)\tSKP\tV1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xEA1)
@@ -276,7 +276,7 @@ TEST(DisassemblerTest, CanDisassemble0xEA1)
 
     std::string result = disassemble_0xEA1(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "SKNP\tV1");
+    EXPECT_STRCASEEQ(result.c_str(), "(EA1)\tSKNP\tV1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xF07)
@@ -287,7 +287,7 @@ TEST(DisassemblerTest, CanDisassemble0xF07)
 
     std::string result = disassemble_0xF07(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "LD\tV1, DT");
+    EXPECT_STRCASEEQ(result.c_str(), "(F07)\tLD\tV1, DT");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xF0A)
@@ -298,7 +298,7 @@ TEST(DisassemblerTest, CanDisassemble0xF0A)
 
     std::string result = disassemble_0xF0A(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "LD\tV1, K");
+    EXPECT_STRCASEEQ(result.c_str(), "(F0A)\tLD\tV1, K");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xF15)
@@ -309,7 +309,7 @@ TEST(DisassemblerTest, CanDisassemble0xF15)
 
     std::string result = disassemble_0xF15(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "LD\tDT, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(F15)\tLD\tDT, V1");
 } 
 
 TEST(DisassemblerTest, CanDisassemble0xF18)
@@ -320,7 +320,7 @@ TEST(DisassemblerTest, CanDisassemble0xF18)
 
     std::string result = disassemble_0xF18(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "LD\tST, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(F18)\tLD\tST, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xF1E)
@@ -331,7 +331,7 @@ TEST(DisassemblerTest, CanDisassemble0xF1E)
 
     std::string result = disassemble_0xF1E(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "ADD\tI, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(F1E)\tADD\tI, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xF29)
@@ -342,7 +342,7 @@ TEST(DisassemblerTest, CanDisassemble0xF29)
 
     std::string result = disassemble_0xF29(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "LD\tF, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(F29)\tLD\tF, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xF33)
@@ -353,7 +353,7 @@ TEST(DisassemblerTest, CanDisassemble0xF33)
 
     std::string result = disassemble_0xF33(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "LD\tB, V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(F33)\tLD\tB, V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xF55)
@@ -364,7 +364,7 @@ TEST(DisassemblerTest, CanDisassemble0xF55)
 
     std::string result = disassemble_0xF55(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "LD\t[I], V1");
+    EXPECT_STRCASEEQ(result.c_str(), "(F55)\tLD\t[I], V1");
 }
 
 TEST(DisassemblerTest, CanDisassemble0xF65)
@@ -375,7 +375,7 @@ TEST(DisassemblerTest, CanDisassemble0xF65)
     
     std::string result = disassemble_0xF65(op_code);
 
-    EXPECT_STRCASEEQ(result.c_str(), "LD\tV1, [I]");
+    EXPECT_STRCASEEQ(result.c_str(), "(F65)\tLD\tV1, [I]");
 }
 
 TEST(DisassemblerTest, CanDisassembleBinary)

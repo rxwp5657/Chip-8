@@ -125,15 +125,15 @@ TEST(CPUTest, CanExecute0x2)
 
     op_code_0x2(cpu, subroutine1);
 
-    ASSERT_EQ(cpu.PC, 0x322);
+    ASSERT_EQ(cpu.PC, 0x322 - 0x2);
     ASSERT_EQ(cpu.SP, 0x1);
     ASSERT_EQ(cpu.stack[cpu.SP - 1], 0x80);    
 
     op_code_0x2(cpu, subroutine2);
 
-    ASSERT_EQ(cpu.PC, 0x123);
+    ASSERT_EQ(cpu.PC, 0x123 - 0x2);
     ASSERT_EQ(cpu.SP, 0x2);
-    ASSERT_EQ(cpu.stack[cpu.SP - 1], 0x322); 
+    ASSERT_EQ(cpu.stack[cpu.SP - 1], 0x322 - 0x2); 
 }
 
 TEST(CPUTest, CanExecute0xEE)
@@ -158,7 +158,7 @@ TEST(CPUTest, CanExecute0xEE)
     
     op_code_0xEE(cpu, op_code);
 
-    ASSERT_EQ(cpu.PC, 0x322);
+    ASSERT_EQ(cpu.PC, 0x322 - 0x2);
     ASSERT_EQ(cpu.SP, 0x1);
     
     op_code_0xEE(cpu, op_code);
@@ -400,7 +400,7 @@ TEST(CPUTest, CanExecute0x8E)
 
     op_code_0x8E(cpu, op_code);
     ASSERT_EQ(cpu.V[3], (uint8_t)(0xA1 << 1));
-    ASSERT_EQ(cpu.V[0xF], 0xA1 & (0x1 << 8));
+    ASSERT_EQ(cpu.V[0xF], 0xA1 >> 7);
 }
 
 TEST(CPUTest, CanExecute0x90)
@@ -467,11 +467,11 @@ TEST(CPUTest, CanExecute0xD)
     cpu.V[1] = 0x0;
     cpu.I    = 0x2;
 
-    cpu.V[2] = 0xF0;
-    cpu.V[3] = 0x90;
-    cpu.V[4] = 0x90;
-    cpu.V[5] = 0x90;
-    cpu.V[6] = 0xF0;
+    cpu.memory[2] = 0xF0;
+    cpu.memory[3] = 0x90;
+    cpu.memory[4] = 0x90;
+    cpu.memory[5] = 0x90;
+    cpu.memory[6] = 0xF0;
 
     op_code_0xD(cpu, op_code);
 
