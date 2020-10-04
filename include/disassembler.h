@@ -6,6 +6,7 @@
 #include <memory>
 #include <cstdint>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <functional>
 #include <unordered_map>
@@ -26,24 +27,24 @@ namespace chip
 
     static inline std::string disassemble_0xE0(const OpCode& op_code)
     {
-        return {"CLS"};
+        return {"(E0)\tCLS"};
     }
 
     static inline std::string disassemble_0xEE(const OpCode& op_code)
     {
-        return {"RET"};
+        return {"(EE)\tRET"};
     }
 
     static inline std::string disassemble_0x0(const OpCode& op_code)
     {
-        return {"NOP"};
+        return {"(0)\tNOP"};
     }
     
     static inline std::string disassemble_0x1(const OpCode& op_code)
     {
         std::stringstream result; 
 
-        result << std::hex << "JMP\t$" << (int)op_code.data;
+        result << std::hex << "(1)\tJMP\t$" << (int)op_code.data;
 
         return result.str();
     }
@@ -52,7 +53,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "CALL\t$" << (int)op_code.data;
+        result << std::hex << "(2)\tCALL\t$" << (int)op_code.data;
 
         return result.str();
     }
@@ -61,7 +62,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "SE\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);
+        result << std::hex << "(3)\tSE\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);
 
         return result.str();
     }
@@ -70,7 +71,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "SNE\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);
+        result << std::hex << "(4)\tSNE\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);
 
         return result.str();
     }
@@ -80,7 +81,7 @@ namespace chip
         std::stringstream result; 
         std::stringstream y_register;
 
-        result << std::hex << "SE\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
+        result << std::hex << "(50)\tSE\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
 
         return result.str();
     }
@@ -90,7 +91,7 @@ namespace chip
         std::stringstream result; 
         std::stringstream value;
 
-        result << std::hex << "MOV\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);
+        result << std::hex << "(6)\tMOV\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);
 
         return result.str();
     }
@@ -99,7 +100,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "ADD\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);
+        result << std::hex << "(7)\tADD\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);
 
         return result.str();
     }
@@ -108,7 +109,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "MOV\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
+        result << std::hex << "(80)\tMOV\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
 
         return result.str();
     }
@@ -117,7 +118,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "OR\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
+        result << std::hex << "(81)\tOR\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
 
         return result.str();
     }
@@ -126,7 +127,7 @@ namespace chip
     {   
         std::stringstream result; 
         
-        result << std::hex << "AND\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
+        result << std::hex << "(82)\tAND\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
 
         return result.str();
     }
@@ -135,7 +136,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "XOR\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
+        result << std::hex << "(83)\tXOR\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
 
         return result.str();
     }
@@ -144,7 +145,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "ADD\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
+        result << std::hex << "(84)\tADD\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
 
         return result.str();
     }
@@ -153,7 +154,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "SUB\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
+        result << std::hex << "(85)\tSUB\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
 
         return result.str();
     }
@@ -162,7 +163,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "SHR\tV" << (int)((op_code.data & 0xF0) >> 4);
+        result << std::hex << "(86)\tSHR\tV" << (int)((op_code.data & 0xF0) >> 4);
 
         return result.str();
     }
@@ -171,7 +172,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "SUBN\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
+        result << std::hex << "(87)\tSUBN\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
 
         return result.str();
     }
@@ -180,7 +181,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "SHL\tV" << (int)((op_code.data & 0xF0) >> 4);
+        result << std::hex << "(8E)\tSHL\tV" << (int)((op_code.data & 0xF0) >> 4);
 
         return result.str();
     }
@@ -189,7 +190,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "SNE\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
+        result << std::hex << "(90)\tSNE\tV" << (int)((op_code.data & 0xF0) >> 4) << ", V" << (int)(op_code.data & 0xF);
     
         return result.str();
     }
@@ -198,7 +199,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "MVI\tI $" << (int)op_code.data;
+        result << std::hex << "(A)\tMVI\tI $" << (int)op_code.data;
 
         return result.str();
     }
@@ -207,7 +208,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "JMP\tV0, $" << (int)op_code.data;
+        result << std::hex << "(B)\tJMP\tV0, $" << (int)op_code.data;
 
         return result.str();
     }
@@ -216,7 +217,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "RND\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);;
+        result << std::hex << "(C)\tRND\tV" << (int)((op_code.data & 0xF00) >> 8) << ", $" << (int)(op_code.data & 0xFF);;
 
         return result.str();
     }
@@ -225,7 +226,7 @@ namespace chip
     {
         std::stringstream result; 
 
-        result << std::hex << "DRW\tV" << (int)((op_code.data & 0xF00) >> 8) << ", V" << (int)((op_code.data & 0xF0)  >> 4) <<  ", $" << (op_code.data & 0xF);
+        result << std::hex << "(D)\tDRW\tV" << (int)((op_code.data & 0xF00) >> 8) << ", V" << (int)((op_code.data & 0xF0)  >> 4) <<  ", $" << (op_code.data & 0xF);
 
         return result.str();
     }
@@ -234,7 +235,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "SKP\tV" << (int)(op_code.data);
+        result << std::hex << "(E9E)\tSKP\tV" << (int)(op_code.data);
 
         return result.str();
     }
@@ -243,7 +244,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "SKNP\tV" << (int)(op_code.data);
+        result << std::hex << "(EA1)\tSKNP\tV" << (int)(op_code.data);
 
         return result.str();
     }
@@ -252,7 +253,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "LD\tV" << (int)(op_code.data) << ", DT";
+        result << std::hex << "(F07)\tLD\tV" << (int)(op_code.data) << ", DT";
 
         return result.str();
     }
@@ -261,7 +262,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "LD\tV" << (int)(op_code.data) << ", K";
+        result << std::hex << "(F0A)\tLD\tV" << (int)(op_code.data) << ", K";
 
         return result.str();
     }
@@ -270,7 +271,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "LD\tDT, V" << (int)(op_code.data);
+        result << std::hex << "(F15)\tLD\tDT, V" << (int)(op_code.data);
 
         return result.str();
     }
@@ -279,7 +280,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "LD\tST, V" << (int)(op_code.data);
+        result << std::hex << "(F18)\tLD\tST, V" << (int)(op_code.data);
 
         return result.str();
     }
@@ -288,7 +289,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "ADD\tI, V" << (int)(op_code.data);
+        result << std::hex << "(F1E)\tADD\tI, V" << (int)(op_code.data);
 
         return result.str();
     }
@@ -297,7 +298,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "LD\tF, V" << (int)(op_code.data);
+        result << std::hex << "(F29)\tLD\tF, V" << (int)(op_code.data);
 
         return result.str();
     }
@@ -306,7 +307,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "LD\tB, V" << (int)(op_code.data);
+        result << std::hex << "(F33)\tLD\tB, V" << (int)(op_code.data);
 
         return result.str();
     }
@@ -315,7 +316,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "LD\t[I], V" << (int)(op_code.data);
+        result << std::hex << "(F55)\tLD\t[I], V" << (int)(op_code.data);
 
         return result.str();
     }
@@ -324,7 +325,7 @@ namespace chip
     {
         std::stringstream result;
 
-        result << std::hex << "LD\tV" << (int)(op_code.data) << ", [I]";
+        result << std::hex << "(F65)\tLD\tV" << (int)(op_code.data) << ", [I]";
 
         return result.str();
     }
@@ -390,11 +391,13 @@ namespace chip
         {
             OpCode op_code = decode(program, PC);
             
-            std::string message = disassemblers.at(op_code.code)(op_code);
-            
-            output <<  std::setfill('0') << std::setw(4) << std::to_string(line) << "  " << message << "\n";
-            
-            PC += 2; line++;
+            if(disassemblers.find(op_code.code) != disassemblers.end())
+            {
+                std::string message = disassemblers.at(op_code.code)(op_code);
+                output <<  std::setfill('0') << std::setw(4) << std::to_string(line) << "  " << message << "\n";
+                line++;
+            }
+            PC += 2;
         }
     }
 }

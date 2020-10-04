@@ -3,7 +3,7 @@
 
 #include <tuple>
 #include <array>
-#include <time.h> 
+#include <time.h>
 #include <string>
 #include <fstream>
 #include <cstdint>
@@ -20,6 +20,9 @@ namespace chip
      */ 
     const uint16_t ROM_START = 0x200;
 
+    const uint16_t SCREEN_WIDHT  = 64;
+    const uint16_t SCREEN_HEIGHT = 32;
+    
     /**
      *  Chip-8 has a font set which can be used to 
      *  write letters A - F and digits 0 - 9. Also,
@@ -68,7 +71,8 @@ namespace chip
      */ 
     struct CPU
     {
-        CPU() : DT{0}, ST{0}, SP{0}, PC{0x200},I{0}, key_pad{}, V{}, memory{}, screen{}, stack{} {}
+        CPU() : draw{false}, DT{0}, ST{0}, SP{0}, PC{0x200},I{0}, key_pad{}, V{}, memory{}, screen{}, stack{} {}
+        bool     draw;
         uint8_t  DT; // Delay Time register.
         uint8_t  ST; // Sound Time register.    
         uint8_t  SP; // Stack Pointer.
@@ -105,7 +109,8 @@ namespace chip
      *  @param cpu the cpu that holds the screen to be cleared.
      */
     static inline void op_code_0xE0(CPU& cpu, const OpCode& op_code)
-    {
+    { 
+        cpu.draw = true;  
         for(int i = 0 ; i < cpu.screen.size() ; i++) cpu.screen[i] = 0;
     }
 
@@ -149,7 +154,8 @@ namespace chip
     static inline void op_code_0x2(CPU& cpu, const OpCode& op_code)
     {
         cpu.stack[cpu.SP] = cpu.PC;
-        cpu.PC = op_code.data;
+        cpu.PC  = op_code.data;
+        cpu.PC -= 2;
         cpu.SP += 1;
     }
 
@@ -216,7 +222,7 @@ namespace chip
      */ 
     static inline void op_code_0x7(CPU& cpu, const OpCode& op_code)
     {
-        cpu.V[((op_code.data & 0xF00) >> 8)] = cpu.V[((op_code.data & 0xF00) >> 8)] + (op_code.data & 0xFF);
+        cpu.V[((op_code.data & 0xF00) >> 8)] += (op_code.data & 0xFF);
     }
 
     /**
@@ -240,7 +246,7 @@ namespace chip
      */ 
     static inline void op_code_0x81(CPU& cpu, const OpCode& op_code)
     {
-        cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] | cpu.V[op_code.data & 0xF];
+        cpu.V[((op_code.data & 0xF0) >> 4)] |= cpu.V[op_code.data & 0xF];
     }
 
      /**
@@ -253,7 +259,7 @@ namespace chip
      */ 
     static inline void op_code_0x82(CPU& cpu, const OpCode& op_code)
     {
-        cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] & cpu.V[op_code.data & 0xF];
+        cpu.V[((op_code.data & 0xF0) >> 4)] &= cpu.V[op_code.data & 0xF];
     }
 
      /**
@@ -266,7 +272,7 @@ namespace chip
      */ 
     static inline void op_code_0x83(CPU& cpu, const OpCode& op_code)
     {
-        cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] ^ cpu.V[op_code.data & 0xF];
+        cpu.V[((op_code.data & 0xF0) >> 4)] ^= cpu.V[op_code.data & 0xF];
     }
 
      /**
@@ -280,7 +286,7 @@ namespace chip
      */ 
     static inline void op_code_0x84(CPU& cpu, const OpCode& op_code)
     {
-        if(cpu.V[((op_code.data & 0xF0) >> 4)] + cpu.V[op_code.data & 0xF] > 255)
+        if(cpu.V[((op_code.data & 0xF0) >> 4)] > (0xFF - cpu.V[op_code.data & 0xF]))
         {
             cpu.V[0xF] = 0x1;
         }
@@ -289,7 +295,7 @@ namespace chip
             cpu.V[0xF] = 0x0;
         }
         
-        cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] + cpu.V[(op_code.data & 0xF)];
+        cpu.V[((op_code.data & 0xF0) >> 4)] += cpu.V[(op_code.data & 0xF)];
     }   
 
      /**
@@ -362,7 +368,7 @@ namespace chip
      */ 
     static inline void op_code_0x8E(CPU& cpu, const OpCode& op_code)
     {
-        cpu.V[0xF] = cpu.V[((op_code.data & 0xF0) >> 4)] & (0x1 << 0x8);
+        cpu.V[0xF] = cpu.V[((op_code.data & 0xF0) >> 4)] >> 0x7;
         cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] << 1;
     }
 
@@ -410,9 +416,8 @@ namespace chip
      */ 
     static inline void op_code_0xC(CPU& cpu, const OpCode& op_code)
     {
-        uint8_t random = rand() % 256;
-
-        cpu.V[(op_code.data & 0xF00) >> 8] = (op_code.data & 0xFF) & random; 
+        srand (time(NULL));
+        cpu.V[(op_code.data & 0xF00) >> 8] = (rand() % (0xFF + 1)) & (op_code.data & 0xFF);
     }
 
     /**
@@ -426,15 +431,16 @@ namespace chip
      */ 
     static inline void op_code_0xD(CPU& cpu, const OpCode& op_code)
     {
-        const uint8_t vx = cpu.V[(op_code.data & 0xF00) >> 8];
-        const uint8_t vy = cpu.V[(op_code.data & 0xF0)  >> 4];
+        const uint8_t vx = cpu.V[(op_code.data & 0xF00) >> 8] % 65;
+        const uint8_t vy = cpu.V[(op_code.data & 0xF0)  >> 4] % 33;
         const uint8_t h  = op_code.data & 0xF;
 
         cpu.V[0xF] = 0x0;
+        cpu.draw = true;  
         
         for(int i = 0 ; i < h ; i++)
         {
-            uint8_t row = cpu.V[cpu.I + i];
+            uint8_t row = cpu.memory[cpu.I + i];
 
             for(int j = 0 ; j < 8 ; j++)
             {
@@ -454,8 +460,8 @@ namespace chip
      *  @param op_code contains the id of the registers that will be used.
      */ 
     static inline void op_code_0xE9E(CPU& cpu, const OpCode& op_code)
-    {
-        if((cpu.key_pad & (0x1 << cpu.V[op_code.data])) != 0x0) cpu.PC += 2;
+    {   
+        if((cpu.key_pad & (0x1 << cpu.V[op_code.data]))) cpu.PC += 2;
     }
 
     /**
@@ -466,7 +472,7 @@ namespace chip
      */ 
     static inline void op_code_0xEA1(CPU& cpu, const OpCode& op_code)
     {
-        if((cpu.key_pad & (0x1 << cpu.V[op_code.data])) == 0x0) cpu.PC += 2;
+        if(!(cpu.key_pad & (0x1 << cpu.V[op_code.data]))) cpu.PC += 2;
     }
 
     /**
@@ -726,7 +732,11 @@ namespace chip
     {
         OpCode op_code = decode(cpu.memory, cpu.PC);
 
-        op_codes.at(op_code.code)(cpu, op_code);
+        if(op_codes.find(op_code.code) != op_codes.end())
+            op_codes.at(op_code.code)(cpu, op_code);
+        
+        if(cpu.DT > 0) --cpu.DT;
+        if(cpu.ST > 0) --cpu.ST;
 
         cpu.PC += 2;
     }
