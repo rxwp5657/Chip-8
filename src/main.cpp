@@ -12,6 +12,12 @@
 
 int main(int argc, char **argv)
 {
+    if(argc != 2)
+    {
+        std::cout << "Unable to start the Emulator becuase no ROM path was provided \n";
+        return 0;
+    }
+
     if ( SDL_Init(SDL_INIT_EVERYTHING) < 0 ) 
     {
         std::cout << "Couldn't initialize SDL because: " << SDL_GetError();
@@ -50,7 +56,7 @@ int main(int argc, char **argv)
     chip::CPU chip8{};
     chip::load_font_set(chip8);
 
-    chip::load_ROM(chip8, "../resources/ROMS/UFO");
+    chip::load_ROM(chip8, std::string{argv[1]});
     
     for (;;)
     {
