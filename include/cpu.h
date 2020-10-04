@@ -286,7 +286,7 @@ namespace chip
      */ 
     static inline void op_code_0x84(CPU& cpu, const OpCode& op_code)
     {
-        if(cpu.V[((op_code.data & 0xF0) >> 4)] > (0xFF - cpu.V[op_code.data & 0xF]))
+        if(cpu.V[((op_code.data & 0xF0) >> 4)] + cpu.V[op_code.data & 0xF] > 255U)
         {
             cpu.V[0xF] = 0x1;
         }
@@ -318,7 +318,7 @@ namespace chip
         {
             cpu.V[0xF] = 0x0;
         }
-        cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] - cpu.V[(op_code.data & 0xF)];
+        cpu.V[((op_code.data & 0xF0) >> 4)] -= cpu.V[(op_code.data & 0xF)];
     }
 
     /**
@@ -332,7 +332,7 @@ namespace chip
     static inline void op_code_0x86(CPU& cpu, const OpCode& op_code)
     {
         cpu.V[0xF] = cpu.V[((op_code.data & 0xF0) >> 4)] & 0x1;
-        cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] >> 1;
+        cpu.V[((op_code.data & 0xF0) >> 4)] >>= 1;
     }
 
     /**
@@ -369,7 +369,7 @@ namespace chip
     static inline void op_code_0x8E(CPU& cpu, const OpCode& op_code)
     {
         cpu.V[0xF] = cpu.V[((op_code.data & 0xF0) >> 4)] >> 0x7;
-        cpu.V[((op_code.data & 0xF0) >> 4)] = cpu.V[((op_code.data & 0xF0) >> 4)] << 1;
+        cpu.V[((op_code.data & 0xF0) >> 4)] <<= 1;
     }
 
     /**
@@ -431,8 +431,8 @@ namespace chip
      */ 
     static inline void op_code_0xD(CPU& cpu, const OpCode& op_code)
     {
-        const uint8_t vx = cpu.V[(op_code.data & 0xF00) >> 8] % 65;
-        const uint8_t vy = cpu.V[(op_code.data & 0xF0)  >> 4] % 33;
+        const uint8_t vx = cpu.V[(op_code.data & 0xF00) >> 8] % 64;
+        const uint8_t vy = cpu.V[(op_code.data & 0xF0)  >> 4] % 32;
         const uint8_t h  = op_code.data & 0xF;
 
         cpu.V[0xF] = 0x0;

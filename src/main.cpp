@@ -8,7 +8,6 @@
 
 #include "../include/cpu.h"
 #include "../include/gui.h"
-#include "../include/debbuger.h"
 #include "../include/disassembler.h"
 
 int main(int argc, char **argv)
@@ -51,12 +50,12 @@ int main(int argc, char **argv)
     chip::CPU chip8{};
     chip::load_font_set(chip8);
 
-    chip::load_ROM(chip8, "../resources/ROMS/GUESS");
+    chip::load_ROM(chip8, "../resources/ROMS/UFO");
     
     for (;;)
     {
-       chip::cycle(chip8);
-
+        chip::cycle(chip8);
+        
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
